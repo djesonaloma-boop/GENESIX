@@ -1,26 +1,24 @@
 {
   "name": "genesix",
-  "version": "1.0.1",
-  "private": true,
-  "description": "GENESIX - Messagerie intelligente par Jason Aloma 🇨🇩",
+  "version": "1.0.0",
+  "description": "GENESIX - Messagerie Intelligente par Jason Aloma 🇨🇩",
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "dev": "node --watch backend/server.js",
-    "check": "node --check backend/app.js && node --check backend/routes.js && node --check 'api/[...chemin].js'"
-  },
-  "engines": {
-    "node": ">=20.x"
+    "dev": "node --watch backend/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.21.2",
-    "firebase-admin": "^12.7.0",
-    "nodemailer": "^6.9.16"
+    "express": "^4.19.2",
+    "firebase-admin": "^12.4.0",
+    "nodemailer": "^6.9.14"
   },
   "devDependencies": {
-    "@capacitor/cli": "^6.2.0",
-    "@capacitor/core": "^6.2.0",
-    "@capacitor/android": "^6.2.0"
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

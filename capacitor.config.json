@@ -1,0 +1,6 @@
+{
+  "appId": "com.jasonaloma.genesix",
+  "appName": "GENESIX",
+  "webDir": "public",
+  "bundledWebRuntime": false
+}
