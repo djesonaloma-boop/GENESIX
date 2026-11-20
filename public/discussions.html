@@ -105,7 +105,7 @@ button,input{font-family:inherit}button{cursor:pointer}
  <div class="conversation-list" id="conversationList"></div></section>
 <div class="footer">© 2026 GENESIX · Tous droits réservés<br>Créé par Jason Aloma 🇨🇩<br>Kinshasa · RDC</div>
 <nav class="bottom-nav">
- <a href="discussion.html" class="nav-item active"><span class="nav-icon">💬</span>Discussions</a>
+ <a href="discussions.html" class="nav-item active"><span class="nav-icon">💬</span>Discussions</a>
  <a href="statut.html" class="nav-item"><span class="nav-icon">◉</span>Statuts</a>
  <a href="contact.html" class="nav-item"><span class="nav-icon">👥</span>Contacts</a>
  <a href="profil.html" class="nav-item"><span class="nav-icon">👤</span>Profil</a>
@@ -135,15 +135,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// ===== METS TA CONFIG GENESIX ICI =====
+// GENESIX - Meme config que register + login - starlink-investit - OK dans le HTML
 const firebaseConfig = {
-  apiKey: "COLLE_TA_APIKEY_GENESIX_ICI",
-  authDomain: "genesix.firebaseapp.com",
-  databaseURL: "https://genesix-default-rtdb.firebaseio.com",
-  projectId: "genesix",
-  storageBucket: "genesix.firebasestorage.app",
-  messagingSenderId: "COLLE_TON_SENDER_ID",
-  appId: "COLLE_TON_APP_ID"
+  apiKey: "AIzaSyA24pBo8mBWiZssPtep--MMBdB7c8_Lu4U",
+  authDomain: "starlink-investit.firebaseapp.com",
+  databaseURL: "https://starlink-investit-default-rtdb.firebaseio.com",
+  projectId: "starlink-investit",
+  storageBucket: "starlink-investit.firebasestorage.app",
+  messagingSenderId: "807081599583",
+  appId: "1:807081599583:web:e00ec3959bc4acdae031ea"
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -161,7 +161,13 @@ localStorage.removeItem("genesix_messages");
 
 document.getElementById("logoutBtn").onclick = async ()=>{
   if(confirm("Se déconnecter de GENESIX ?")){
-    if(myUid) await update(ref(db,"users/"+myUid), { online:false, lastSeen: Date.now() });
+    try{ if(myUid) await update(ref(db,"users/"+myUid), { online:false, lastSeen: Date.now() }); }catch(e){}
+    try{
+      localStorage.removeItem("genesix_uid");
+      localStorage.removeItem("genesix_email");
+      localStorage.removeItem("genesix_username");
+      sessionStorage.setItem("genesix_just_logout","1");
+    }catch(e){}
     await signOut(auth); location.href="login.html";
   }
 };
@@ -185,9 +191,9 @@ onAuthStateChanged(auth, async (user)=>{
   const profile = snap.val() || {};
   document.getElementById("welcomeTitle").textContent = "Bonjour, " + (profile.firstName || profile.username || "👋") + " 💬";
   document.getElementById("welcomeSub").textContent = "Retrouve tous tes messages, " + (profile.username ? "@"+profile.username : "GENESIX");
-  await update(ref(db,"users/"+myUid), { online:true, lastSeen: Date.now() });
+  try{ await update(ref(db,"users/"+myUid), { online:true, lastSeen: Date.now() }); }catch(e){}
 
-  // Écouter SEULEMENT les vraies conversations Firebase - Si vide = vide, on n'invente RIEN
+  // Ecouter SEULEMENT les vraies conversations Firebase - Si vide = vide, on n'invente RIEN
   onValue(ref(db,"conversations"), async (csnap)=>{
     const data = csnap.val() || {};
     allConvs = [];
