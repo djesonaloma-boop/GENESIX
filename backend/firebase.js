@@ -1,42 +1,28 @@
 // GENESIX - backend/firebase.js
-// Connexion Firebase Admin (SDK Admin)
 const admin = require('firebase-admin');
-const config = require('./admin-config');
 
-let initialized = false;
+// ⚠️ COLLE TES CLÉS ICI - Firebase Console > Paramètres > Comptes de service
+const SERVICE_ACCOUNT = {
+  projectId: "genesix",
+  clientEmail: "firebase-adminsdk-xxxxx@genesix.iam.gserviceaccount.com",
+  privateKey: "-----BEGIN PRIVATE KEY-----\nCOLLE_TA_CLE_ICI\n-----END PRIVATE KEY-----\n",
+  databaseURL: "https://genesix-default-rtdb.firebaseio.com"
+};
 
-function initFirebase() {
-  if (admin.apps.length > 0) return admin.app();
-  if (initialized) return admin.app();
-
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: config.FIREBASE.PROJECT_ID,
-        clientEmail: config.FIREBASE.CLIENT_EMAIL,
-        privateKey: config.FIREBASE.PRIVATE_KEY.replace(/\\n/g, '\n')
-      }),
-      databaseURL: config.FIREBASE.DATABASE_URL
-    });
-
-    initialized = true;
-    console.log('✅ Firebase Admin connecté - GENESIX');
-    return admin.app();
-  } catch (e) {
-    console.error('❌ Firebase erreur:', e.message);
-    console.error('👉 Vérifie tes clés dans admin-config.js');
-    return null;
-  }
+if (admin.apps.length === 0) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: SERVICE_ACCOUNT.projectId,
+      clientEmail: SERVICE_ACCOUNT.clientEmail,
+      privateKey: SERVICE_ACCOUNT.privateKey.replace(/\\n/g, '\n')
+    }),
+    databaseURL: SERVICE_ACCOUNT.databaseURL
+  });
+  console.log('✅ Firebase Admin connecté');
 }
 
-function getDB() {
-  if (admin.apps.length === 0) initFirebase();
-  return admin.database();
-}
-
-function getAuth() {
-  if (admin.apps.length === 0) initFirebase();
-  return admin.auth();
-}
-
-module.exports = { initFirebase, getDB, getAuth, admin };
+module.exports = {
+  db: admin.database(),
+  auth: admin.auth(),
+  admin
+};
