@@ -1,0 +1,11 @@
+{
+  "name": "GENESIX",
+  "short_name": "GENESIX",
+  "description": "Messagerie intelligente par Jason Aloma",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050a1a",
+  "theme_color": "#050a1a",
+  "icons": []
+}
