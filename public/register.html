@@ -195,8 +195,8 @@ password.addEventListener("input",()=>{
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, get, query, orderByChild, equalTo, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, set, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // GENESIX - Config starlink-investit
 const firebaseConfig = {
@@ -225,7 +225,6 @@ form.addEventListener("submit", async(e)=>{
   e.preventDefault(); message.className="message";
   const firstName=document.getElementById("firstName").value.trim();
   const lastName=document.getElementById("lastName").value.trim();
-  // SIMPLE : on enlève juste les espaces, pas de regex compliquée
   const username=document.getElementById("username").value.replace(/\s/g,"").trim();
   const birthDate=birthInputFix.value;
   const gender=document.getElementById("gender").value;
@@ -239,7 +238,6 @@ form.addEventListener("submit", async(e)=>{
   const terms=document.getElementById("terms").checked;
 
   if(!firstName||!lastName||!username||!birthDate||!gender||!country||!city||!email||!phone||!pass||!confirm){ showMessage("Veuillez compléter toutes les informations.","error"); return; }
-  // SIMPLE : juste la longueur
   if(username.length < 3 || username.length > 25){ showMessage("Pseudonyme trop court ou trop long.","error"); return; }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showMessage("Adresse e-mail invalide.","error"); return; }
   if(!/^[0-9]{6,15}$/.test(phone)){ showMessage("Numéro de téléphone invalide.","error"); return; }
@@ -258,7 +256,6 @@ form.addEventListener("submit", async(e)=>{
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     const uid = cred.user.uid;
     const fullPhone = countryCode + phone;
-    const code6 = Math.floor(100000 + Math.random()*900000).toString();
 
     await set(ref(db, "users/" + uid), {
       uid: uid, firstName, lastName,
@@ -270,32 +267,29 @@ form.addEventListener("submit", async(e)=>{
       email, phone: fullPhone, countryCode,
       photoURL: "", bio: "",
       followers: 0, following: 0, postsCount: 0,
-      verified: false, online: true, lastSeen: Date.now(),
-      verificationCode: code6,
-      verificationExpires: Date.now()+15*60*1000,
+      verified: true, online: true, lastSeen: Date.now(),
       createdAt: new Date().toISOString()
     });
     await set(ref(db, "usernames/" + username.toLowerCase()), uid);
-
-    try{ await sendEmailVerification(cred.user); }catch(e){ console.log(e); }
 
     try{
       localStorage.setItem("genesix_uid", uid);
       localStorage.setItem("genesix_email", email);
       localStorage.setItem("genesix_username", username);
-      localStorage.setItem("genesix_pending_email", email);
     }catch(e){}
 
-    showMessage("Compte créé ! Vérifie ton email...","success");
-    setTimeout(()=> window.location.href="verify.html?email="+encodeURIComponent(email), 900);
+    showMessage("Compte créé ! Bienvenue sur GENESIX...","success");
+    setTimeout(()=> window.location.href="discussions.html", 900);
 
   }catch(err){
-    console.error(err);
-    let txt="Erreur lors de la création du compte.";
+    console.error("ERREUR FIREBASE:", err.code, err.message);
+    let txt="Erreur : " + err.code + " - " + err.message;
     if(err.code==="auth/email-already-in-use") txt="Cet email est déjà utilisé. Connecte-toi.";
     if(err.code==="auth/invalid-email") txt="Email invalide.";
     if(err.code==="auth/weak-password") txt="Mot de passe trop faible.";
     if(err.code==="auth/network-request-failed") txt="Pas de connexion internet.";
+    if(err.code==="PERMISSION_DENIED") txt="Base de données bloquée. Va dans Firebase > Realtime Database > Règles > mets .read true, .write true et Publier.";
+    if(err.code==="auth/operation-not-allowed") txt="Active Email/Password dans Firebase > Authentication > Sign-in method.";
     showMessage(txt,"error");
     submitBtn.disabled=false; submitBtn.textContent="Créer mon compte ➜";
   }
