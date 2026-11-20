@@ -96,7 +96,6 @@ const root=document.documentElement;const btn=document.getElementById("themeBtn"
 const themes=["dark","white","black"];let current="dark";
 try{const saved=localStorage.getItem("genesix_theme");if(themes.includes(saved))current=saved;}catch(e){}
 function applyTheme(){
-  // FIX : avant "" pour dark, maintenant toujours dark/white/black - même apparence, mais stable
   root.setAttribute("data-theme",current);
   btn.textContent=current==="white"?"☀️ Mode blanc":current==="black"?"⚫ Mode noir":"🌙 Mode bleu nuit";
   const meta=document.querySelector('meta[name="theme-color"]');
@@ -120,31 +119,28 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// ===== 1. METS TA CONFIG GENESIX ICI =====
-// Firebase Console > Paramètres du projet > Tes applis > Web
+// GENESIX - Config starlink-investit - OK a mettre dans le HTML, c'est public
 const firebaseConfig = {
-  apiKey: "COLLE_TA_APIKEY_GENESIX_ICI",
-  authDomain: "genesix.firebaseapp.com",
-  databaseURL: "https://genesix-default-rtdb.firebaseio.com",
-  projectId: "genesix",
-  storageBucket: "genesix.firebasestorage.app",
-  messagingSenderId: "COLLE_TON_SENDER_ID",
-  appId: "COLLE_TON_APP_ID"
+  apiKey: "AIzaSyA24pBo8mBWiZssPtep--MMBdB7c8_Lu4U",
+  authDomain: "starlink-investit.firebaseapp.com",
+  databaseURL: "https://starlink-investit-default-rtdb.firebaseio.com",
+  projectId: "starlink-investit",
+  storageBucket: "starlink-investit.firebasestorage.app",
+  messagingSenderId: "807081599583",
+  appId: "1:807081599583:web:e00ec3959bc4acdae031ea"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// FIX : ne pas rediriger en boucle. On ne redirige que si l'utilisateur vient de se connecter
-// ou si on a déjà genesix_uid. Sinon on laisse le formulaire affiché.
-let justLoggedIn = false;
+// Si deja connecte -> direct discussions.html
 onAuthStateChanged(auth, (user) => {
-  if(user && justLoggedIn){
-    window.location.href = "discussions.html";
+  if(user && !sessionStorage.getItem("genesix_just_logout")){
+    if(localStorage.getItem("genesix_uid") === user.uid){
+      window.location.href = "discussions.html";
+    }
   }
-  // Si tu veux l'auto-login direct, décommente la ligne ci-dessous :
-  // if(user) window.location.href = "discussions.html";
 });
 
 const form = document.getElementById("loginForm");
@@ -171,34 +167,36 @@ form.addEventListener("submit", async (e) => {
     await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
     const cred = await signInWithEmailAndPassword(auth, email, pass);
     const uid = cred.user.uid;
-    justLoggedIn = true;
 
-    // Sauvegarde pour tout le site GENESIX (même clé que dans index.html)
     try{
       localStorage.setItem("genesix_uid", uid);
       localStorage.setItem("genesix_email", email);
+      sessionStorage.removeItem("genesix_just_logout");
     }catch(e){}
 
-    // Vérifier / créer profil dans Database
-    const snap = await get(ref(db, "users/" + uid));
-    if(!snap.exists()){
-      await update(ref(db, "users/" + uid), { email: email, lastLogin: new Date().toISOString(), online: true });
-    } else {
-      await update(ref(db, "users/" + uid), { lastLogin: new Date().toISOString(), online: true });
-    }
+    try{
+      const snap = await get(ref(db, "users/" + uid));
+      if(snap.exists()){
+        const u = snap.val();
+        await update(ref(db, "users/" + uid), { lastLogin: new Date().toISOString(), online: true, lastSeen: Date.now() });
+        try{ if(u.username) localStorage.setItem("genesix_username", u.username); }catch(e){}
+      } else {
+        await update(ref(db, "users/" + uid), { email: email, lastLogin: new Date().toISOString(), online: true });
+      }
+    }catch(e){ console.log("DB update:", e); }
 
     showMsg("Connexion réussie ! Bienvenue sur GENESIX...", "success");
     setTimeout(()=> window.location.href = "discussions.html", 800);
 
   } catch(err){
-    console.error(err);
-    let txt = "Erreur de connexion.";
-    if(err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") txt = "Email ou mot de passe incorrect.";
-    if(err.code === "auth/user-not-found") txt = "Aucun compte avec cet email. Crée un compte.";
+    console.error("ERREUR LOGIN:", err.code, err.message);
+    let txt = "Erreur : " + err.code;
+    if(err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") txt = "Email ou mot de passe incorrect.";
     if(err.code === "auth/invalid-email") txt = "Email invalide.";
     if(err.code === "auth/too-many-requests") txt = "Trop de tentatives. Réessaie plus tard.";
     if(err.code === "auth/network-request-failed") txt = "Pas de connexion internet.";
-    if(err.code === "auth/api-key-not-valid") txt = "Clé Firebase invalide. Vérifie ta config dans le code.";
+    if(err.code === "auth/api-key-not-valid") txt = "Clé Firebase invalide.";
+    if(err.code === "auth/operation-not-allowed") txt = "Active Email/Password dans Firebase > Authentication.";
     showMsg(txt, "error");
     btn.disabled = false;
     btn.textContent = "Se connecter ➜";
