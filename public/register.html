@@ -196,9 +196,9 @@ password.addEventListener("input",()=>{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// GENESIX - Config starlink-investit
+// GENESIX - Config starlink-investit - OK dans le HTML, c'est public
 const firebaseConfig = {
   apiKey: "AIzaSyA24pBo8mBWiZssPtep--MMBdB7c8_Lu4U",
   authDomain: "starlink-investit.firebaseapp.com",
@@ -249,8 +249,8 @@ form.addEventListener("submit", async(e)=>{
 
   submitBtn.disabled=true; submitBtn.textContent="Création en cours...";
   try{
-    const q = query(ref(db,"users"), orderByChild("username_lower"), equalTo(username.toLowerCase()));
-    const snap = await get(q);
+    // FIX INDEX : on verifie dans usernames/ direct, pas de query, pas besoin de .indexOn
+    const snap = await get(ref(db, "usernames/" + username.toLowerCase()));
     if(snap.exists()){ showMessage("Ce pseudonyme est déjà pris. Choisis-en un autre.","error"); submitBtn.disabled=false; submitBtn.textContent="Créer mon compte ➜"; return; }
 
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
