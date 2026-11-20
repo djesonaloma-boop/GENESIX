@@ -1,0 +1,31 @@
+{
+  "name": "genesix",
+  "version": "1.0.0",
+  "description": "GENESIX - Messagerie Intelligente par Jason Aloma 🇨🇩 Kinshasa, RDC",
+  "main": "backend/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "build": "node API/build.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^12.4.0",
+    "nodemailer": "^6.9.14"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Jason Aloma 🇨🇩",
+  "license": "MIT",
+  "keywords": [
+    "genesix",
+    "messagerie",
+    "firebase",
+    "vercel",
+    "kinshasa",
+    "rdc"
+  ]
+}
