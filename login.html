@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050a1a">
+<title>GENESIX — Connexion</title>
+<style>
+:root{
+--bg:#050a1a;--panel:rgba(14,20,42,.76);--line:rgba(140,160,255,.17);
+--text:#eef1fb;--muted:#8a95b3;--accent:#7c5cff;--accent2:#12d6b4;--shadow:rgba(0,0,0,.45);color-scheme:dark;
+}
+:root[data-theme="white"]{
+--bg:#f2f5ff;--panel:rgba(255,255,255,.82);--line:rgba(60,80,130,.15);
+--text:#11182c;--muted:#66718b;--accent:#6848ed;--accent2:#00a98e;--shadow:rgba(40,50,90,.13);color-scheme:light;
+}
+:root[data-theme="black"]{
+--bg:#000;--panel:rgba(20,20,25,.88);--line:rgba(255,255,255,.12);
+--text:#f5f5f5;--muted:#999;--accent:#805cff;--accent2:#00d9b5;--shadow:rgba(0,0,0,.8);color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;min-height:100dvh;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow-x:hidden;transition:.3s}
+.background{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.background i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.4;animation:float 18s infinite alternate}
+.background i:nth-child(1){width:48vmax;height:48vmax;background:#593cff;left:-18vmax;top:-20vmax}
+.background i:nth-child(2){width:40vmax;height:40vmax;background:#00c9ae;right:-15vmax;bottom:-20vmax}
+.background i:nth-child(3){width:28vmax;height:28vmax;background:#286aff;right:15vw;top:-12vmax}
+@keyframes float{to{transform:translate(6vmax,4vmax) scale(1.12)}}
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(124,92,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(124,92,255,.055) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(ellipse at center,#000 10%,transparent 80%)}
+header{width:100%;max-width:1200px;margin:auto;padding:20px 25px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:900}
+.logo-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:white;font-size:23px;background:linear-gradient(135deg,#7655ff,#09cdb5);box-shadow:0 8px 30px rgba(124,92,255,.4)}
+.logo span{color:var(--accent2)}
+.theme-btn{padding:11px 15px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:13px;cursor:pointer;font-weight:700}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:30px 18px 50px}
+.login-card{width:100%;max-width:440px;padding:32px;background:var(--panel);border:1px solid var(--line);border-radius:27px;backdrop-filter:blur(25px);box-shadow:0 35px 100px var(--shadow)}
+.login-icon{width:75px;height:75px;border-radius:23px;margin:0 auto 22px;display:grid;place-items:center;font-size:35px;background:linear-gradient(135deg,#7655ff,#09cdb5)}
+h1{text-align:center;font-size:29px;font-weight:900}
+.subtitle{text-align:center;color:var(--muted);font-size:13px;line-height:1.7;margin:12px 0 28px}
+.field{margin-bottom:19px}
+.field label{display:block;font-size:13px;font-weight:750;margin-bottom:9px}
+.input-wrap{position:relative}
+.field input{width:100%;padding:16px 45px 16px 15px;border:1px solid var(--line);border-radius:13px;background:rgba(120,130,180,.07);color:var(--text);outline:none;font-size:14px}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.12)}
+.input-wrap .symbol{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);font-size:17px;cursor:pointer}
+.options{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:5px 0 24px;font-size:12px;color:var(--muted)}
+.remember{display:flex;align-items:center;gap:7px}
+.remember input{accent-color:var(--accent)}
+a{color:var(--accent2);text-decoration:none}
+.submit{width:100%;padding:17px;border:0;border-radius:14px;background:linear-gradient(110deg,#7655ff,#4f78ff 60%,#10c6b5);color:white;font-weight:850;font-size:15px;cursor:pointer}
+.submit:hover{transform:translateY(-3px)}
+.submit:disabled{opacity:.6;cursor:wait}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:11px;margin:25px 0}
+.divider:before,.divider:after{content:"";height:1px;background:var(--line);flex:1}
+.register{text-align:center;font-size:13px;color:var(--muted)}
+.message{display:none;margin-bottom:18px;padding:12px;border-radius:12px;font-size:12px;line-height:1.5}
+.message.error{display:block;background:rgba(255,70,90,.12);color:#ff8999}
+.message.success{display:block;background:rgba(18,214,180,.12);color:var(--accent2)}
+.back{display:block;text-align:center;margin-top:22px;font-size:12px;color:var(--muted)}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}
+footer strong{color:var(--accent2)}
+@media(max-width:450px){header{padding:16px}.login-card{padding:25px 20px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="background"><i></i><i></i><i></i></div>
+<div class="grid-bg"></div>
+<header>
+<div class="logo"><div class="logo-icon">G</div>GENES<span>IX</span></div>
+<button class="theme-btn" id="themeBtn">🌙 Thème</button>
+</header>
+<main>
+<section class="login-card">
+<div class="login-icon">💬</div>
+<h1>Bon retour !</h1>
+<p class="subtitle">Connectez-vous à votre compte GENESIX et retrouvez vos conversations.</p>
+<div class="message" id="message"></div>
+<form id="loginForm">
+<div class="field"><label for="email">Adresse e-mail</label><div class="input-wrap"><input id="email" type="email" placeholder="exemple@email.com" autocomplete="email" required><span class="symbol">✉</span></div></div>
+<div class="field"><label for="password">Mot de passe</label><div class="input-wrap"><input id="password" type="password" placeholder="Votre mot de passe" autocomplete="current-password" required minlength="6"><button type="button" class="password-toggle" id="togglePassword">◉</button></div></div>
+<div class="options"><label class="remember"><input type="checkbox" id="remember">Se souvenir de moi</label><a href="forgot-password.html">Mot de passe oublié ?</a></div>
+<button class="submit" type="submit" id="submitBtn">Se connecter ➜</button>
+</form>
+<div class="divider">NOUVEAU SUR GENESIX ?</div>
+<p class="register">Pas encore de compte ? <a href="register.html">Créer un compte</a></p>
+<a href="index.html" class="back">← Retour à l'accueil</a>
+</section>
+</main>
+<footer>© 2026 GENESIX · Créé par <strong>Jason Aloma 🇨🇩</strong><br>Kinshasa · RDC</footer>
+
+<script>
+(function(){
+const root=document.documentElement;const btn=document.getElementById("themeBtn");
+const themes=["dark","white","black"];let current="dark";
+try{const saved=localStorage.getItem("genesix_theme");if(themes.includes(saved))current=saved;}catch(e){}
+function applyTheme(){root.setAttribute("data-theme",current==="dark"?"":current);btn.textContent=current==="white"?"☀️ Mode blanc":current==="black"?"⚫ Mode noir":"🌙 Mode bleu nuit";document.querySelector('meta[name="theme-color"]').content=current==="white"?"#f2f5ff":current==="black"?"#000000":"#050a1a";try{localStorage.setItem("genesix_theme",current)}catch(e){}}
+btn.addEventListener("click",()=>{current=themes[(themes.indexOf(current)+1)%themes.length];applyTheme();});
+applyTheme();
+})();
+const password=document.getElementById("password");
+document.getElementById("togglePassword").addEventListener("click",()=>{password.type=password.type==="password"?"text":"password";});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ===== 1. METS TA CONFIG GENESIX ICI =====
+const firebaseConfig = {
+  apiKey: "COLLE_TA_APIKEY_GENESIX_ICI",
+  authDomain: "genesix.firebaseapp.com",
+  databaseURL: "https://genesix-default-rtdb.firebaseio.com",
+  projectId: "genesix",
+  storageBucket: "genesix.firebasestorage.app",
+  messagingSenderId: "COLLE_TON_SENDER_ID",
+  appId: "COLLE_TON_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Si déjà connecté -> aller direct à home
+onAuthStateChanged(auth, (user) => {
+  if(user) window.location.href = "home.html";
+});
+
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+const btn = document.getElementById("submitBtn");
+
+function showMsg(text, type){
+  message.className = "message " + type;
+  message.textContent = text;
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const pass = password.value;
+  const remember = document.getElementById("remember").checked;
+
+  if(!email || !pass){ showMsg("Veuillez remplir tous les champs.", "error"); return; }
+
+  btn.disabled = true;
+  btn.textContent = "Connexion...";
+
+  try{
+    await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    const uid = cred.user.uid;
+
+    // Vérifier si profil existe dans Database
+    const snap = await get(ref(db, "users/" + uid));
+    if(!snap.exists()){
+      // Créer profil basique si manquant
+      await update(ref(db, "users/" + uid), { email: email, lastLogin: new Date().toISOString() });
+    } else {
+      await update(ref(db, "users/" + uid), { lastLogin: new Date().toISOString() });
+    }
+
+    showMsg("Connexion réussie ! Bienvenue sur GENESIX...", "success");
+    setTimeout(()=> window.location.href = "home.html", 800);
+
+  } catch(err){
+    console.error(err);
+    let txt = "Erreur de connexion.";
+    if(err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") txt = "Email ou mot de passe incorrect.";
+    if(err.code === "auth/user-not-found") txt = "Aucun compte avec cet email. Crée un compte.";
+    if(err.code === "auth/invalid-email") txt = "Email invalide.";
+    if(err.code === "auth/too-many-requests") txt = "Trop de tentatives. Réessaie plus tard.";
+    if(err.code === "auth/network-request-failed") txt = "Pas de connexion internet.";
+    showMsg(txt, "error");
+    btn.disabled = false;
+    btn.textContent = "Se connecter ➜";
+  }
+});
+</script>
+</body>
+</html>
