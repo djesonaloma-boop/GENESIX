@@ -1,0 +1,11 @@
+{
+  "appId": "com.jasonaloma.genesix",
+  "appName": "GENESIX",
+  "webDir": "public",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}
