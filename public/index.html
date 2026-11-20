@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#050a1a">
 <meta name="description" content="GENESIX - Votre univers de communication. Connectez-vous avec vos amis et partagez vos moments.">
+<link rel="manifest" href="manifest.json">
 <title>GENESIX — Bienvenue</title>
 
 <style>
@@ -659,7 +659,8 @@ footer strong {
 
     </div>
 
-    <a href="login.html" class="continue-btn">
+    <!-- MODIFIÉ : id + href vers login dans ton plan -->
+    <a href="login.html" id="continueBtn" class="continue-btn">
       <span>Continuer</span>
       <span>➜</span>
     </a>
@@ -708,77 +709,56 @@ footer strong {
 
 <script>
 (function(){
-
   const root = document.documentElement;
   const button = document.getElementById("themeBtn");
   const icon = document.getElementById("themeIcon");
   const label = document.getElementById("themeLabel");
+  const continueBtn = document.getElementById("continueBtn");
 
   const themes = [
-    {
-      id:"dark",
-      icon:"🌙",
-      label:"Mode bleu nuit"
-    },
-    {
-      id:"white",
-      icon:"☀️",
-      label:"Mode blanc"
-    },
-    {
-      id:"black",
-      icon:"⚫",
-      label:"Mode noir"
-    }
+    { id:"dark", icon:"🌙", label:"Mode bleu nuit", meta:"#050a1a" },
+    { id:"white", icon:"☀️", label:"Mode blanc", meta:"#f2f5ff" },
+    { id:"black", icon:"⚫", label:"Mode noir", meta:"#000000" }
   ];
 
   let current = "dark";
-
   try {
     const saved = localStorage.getItem("genesix_theme");
-
-    if(themes.some(t => t.id === saved)){
-      current = saved;
-    }
+    if(themes.some(t => t.id === saved)) current = saved;
   } catch(e){}
 
   function applyTheme(){
-
-    root.setAttribute("data-theme",
-      current === "dark" ? "" : current
-    );
-
+    // FIX : avant c'était data-theme="" pour dark, ça cassait. Maintenant toujours dark/white/black
+    root.setAttribute("data-theme", current);
     const selected = themes.find(t => t.id === current);
-
     icon.textContent = selected.icon;
     label.textContent = selected.label;
-
-    const meta = document.querySelector(
-      'meta[name="theme-color"]'
-    );
-
-    meta.content =
-      current === "white" ? "#f2f5ff" :
-      current === "black" ? "#000000" :
-      "#050a1a";
-
-    try {
-      localStorage.setItem("genesix_theme",current);
-    } catch(e){}
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.content = selected.meta;
+    try { localStorage.setItem("genesix_theme", current); } catch(e){}
   }
 
-  button.addEventListener("click",function(){
-
+  button.addEventListener("click", function(){
     const index = themes.findIndex(t => t.id === current);
-
     current = themes[(index + 1) % themes.length].id;
-
     applyTheme();
-
   });
 
   applyTheme();
 
+  // FIX : si déjà connecté, Continuer -> discussions.html, sinon -> login.html
+  // On ne change pas l'apparence, juste la destination
+  try {
+    const uid = localStorage.getItem("genesix_uid");
+    if(uid && continueBtn) continueBtn.href = "discussions.html";
+  } catch(e){}
+
+  // PWA : enregistre sw.js si dispo, sans casser si absent
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
+  }
 })();
 </script>
 
