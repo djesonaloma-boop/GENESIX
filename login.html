@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<title>GENESIX — Connexion</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  font-family:Arial,sans-serif;
+  background:#050914;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  overflow-x:hidden;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(0,212,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.035) 1px,transparent 1px);
+  background-size:35px 35px;
+  pointer-events:none;
+}
+.glow{
+  position:fixed;
+  width:280px;height:280px;
+  background:#0077ff;
+  filter:blur(130px);
+  opacity:.22;
+  top:5%;left:50%;
+  transform:translateX(-50%);
+}
+.container{
+  position:relative;
+  width:100%;
+  max-width:410px;
+  animation:appear .7s ease;
+}
+.brand{text-align:center;margin-bottom:28px}
+.logo{
+  width:78px;height:78px;
+  margin:0 auto 14px;
+  border-radius:25px;
+  display:grid;
+  place-items:center;
+  font-size:47px;
+  font-weight:900;
+  background:linear-gradient(135deg,#087cff,#00dfd0,#925bff);
+  box-shadow:0 0 35px #008cff45;
+}
+.brand h1{
+  font-size:30px;
+  letter-spacing:4px;
+  background:linear-gradient(90deg,#fff,#00d9ff,#a98aff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.brand p{color:#91a5c0;font-size:13px;margin-top:8px}
+.card{
+  background:rgba(13,25,47,.88);
+  border:1px solid rgba(0,212,255,.17);
+  border-radius:24px;
+  padding:25px 21px;
+  box-shadow:0 20px 60px #0007;
+  backdrop-filter:blur(18px);
+}
+.card h2{font-size:23px;margin-bottom:8px}
+.description{font-size:13px;color:#91a5c0;margin-bottom:25px}
+.field{margin-bottom:17px}
+label{
+  display:block;
+  font-size:12px;
+  color:#c1d0e5;
+  margin-bottom:9px;
+}
+.input-wrap{position:relative}
+input{
+  width:100%;
+  height:51px;
+  padding:0 14px;
+  border-radius:12px;
+  border:1px solid #263954;
+  outline:none;
+  background:#091426;
+  color:white;
+  font-size:16px;
+}
+input:focus{border-color:#00cfff;box-shadow:0 0 0 3px #00cfff15}
+.password{padding-right:55px}
+.eye{
+  position:absolute;
+  right:12px;top:50%;
+  transform:translateY(-50%);
+  border:0;background:none;
+  color:#00d9ff;
+  font-size:12px;
+  padding:10px;
+}
+.forgot{
+  display:block;
+  text-align:right;
+  margin:0 0 20px;
+  color:#00d9ff;
+  font-size:12px;
+  text-decoration:none;
+}
+.btn{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(100deg,#087cff,#00cfc8);
+  color:white;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 8px 25px #007bff30;
+}
+.btn:disabled{opacity:.6}
+.message{
+  display:none;
+  padding:12px;
+  border-radius:10px;
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+.error{display:block;background:#ff42421a;color:#ff8585;border:1px solid #ff424240}
+.success{display:block;background:#00d6a51a;color:#43e9bd;border:1px solid #00d6a540}
+.separator{
+  display:flex;align-items:center;gap:12px;
+  color:#71849e;font-size:11px;margin:22px 0;
+}
+.separator:before,.separator:after{
+  content:"";height:1px;flex:1;background:#263954
+}
+.bottom{text-align:center;font-size:13px;color:#91a5c0}
+.bottom a{color:#00d9ff;text-decoration:none;font-weight:bold}
+footer{text-align:center;margin-top:24px;color:#60728c;font-size:11px;line-height:1.8}
+footer strong{color:#00d9ff}
+@keyframes appear{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+<div class="glow"></div>
+
+<main class="container">
+
+  <header class="brand">
+    <div class="logo">G</div>
+    <h1>GENESIX</h1>
+    <p>Connecter les personnes, sans frontières.</p>
+  </header>
+
+  <section class="card">
+    <h2>Bon retour ! 👋</h2>
+    <p class="description">Connectez-vous pour retrouver vos conversations.</p>
+
+    <div id="message" class="message" role="alert"></div>
+
+    <form id="loginForm">
+
+      <div class="field">
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" placeholder="exemple@email.com"
+          autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <div class="input-wrap">
+          <input id="password" class="password" type="password"
+            placeholder="Votre mot de passe"
+            autocomplete="current-password" required>
+          <button class="eye" type="button" id="togglePassword">VOIR</button>
+        </div>
+      </div>
+
+      <a href="#" class="forgot" id="forgotPassword">
+        Mot de passe oublié ?
+      </a>
+
+      <button class="btn" id="loginBtn" type="submit">
+        Se connecter →
+      </button>
+
+    </form>
+
+    <div class="separator">NOUVEAU SUR GENESIX ?</div>
+
+    <p class="bottom">
+      Vous n'avez pas encore de compte ?
+      <a href="./register.html">Créer un compte</a>
+    </p>
+  </section>
+
+  <footer>
+    GENESIX — Messagerie nouvelle génération<br>
+    Créé par <strong>Jason Aloma 🇨🇩</strong><br>
+    Kinshasa · RDC
+  </footer>
+
+</main>
+
+<script type="module">
+import {
+  auth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "./assets/js/firebase.js";
+
+const form = document.getElementById("loginForm");
+const message = document.getElementById("message");
+const loginBtn = document.getElementById("loginBtn");
+const password = document.getElementById("password");
+
+function showMessage(text,type="error"){
+  message.textContent=text;
+  message.className="message "+type;
+}
+
+onAuthStateChanged(auth,user=>{
+  if(user){
+    window.location.replace("./discussions.html");
+  }
+});
+
+document.getElementById("togglePassword").addEventListener("click",()=>{
+  const visible=password.type==="text";
+  password.type=visible?"password":"text";
+  document.getElementById("togglePassword").textContent=
+    visible?"VOIR":"CACHER";
+});
+
+form.addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const email=document.getElementById("email").value.trim();
+  const pass=password.value;
+
+  loginBtn.disabled=true;
+  loginBtn.textContent="Connexion en cours...";
+
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    showMessage("Connexion réussie !","success");
+    window.location.replace("./discussions.html");
+  }catch(error){
+    const errors={
+      "auth/invalid-email":"Adresse email invalide.",
+      "auth/invalid-credential":"Email ou mot de passe incorrect.",
+      "auth/user-not-found":"Aucun compte trouvé avec cet email.",
+      "auth/wrong-password":"Mot de passe incorrect.",
+      "auth/too-many-requests":"Trop de tentatives. Réessayez plus tard.",
+      "auth/network-request-failed":"Vérifiez votre connexion Internet."
+    };
+    showMessage(errors[error.code]||"Impossible de se connecter. Réessayez.");
+    loginBtn.disabled=false;
+    loginBtn.textContent="Se connecter →";
+  }
+});
+
+document.getElementById("forgotPassword").addEventListener("click",async e=>{
+  e.preventDefault();
+
+  const email=document.getElementById("email").value.trim();
+
+  if(!email){
+    showMessage("Entrez votre adresse email pour recevoir le lien de réinitialisation.");
+    return;
+  }
+
+  try{
+    await sendPasswordResetEmail(auth,email);
+    showMessage("Si cette adresse correspond à un compte, un email de réinitialisation sera envoyé.","success");
+  }catch(error){
+    showMessage("Impossible d'envoyer le lien. Vérifiez votre adresse email.");
+  }
+});
+</script>
+
+</body>
+</html>

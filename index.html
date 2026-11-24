@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#050914">
+<meta name="description" content="GENESIX - Connecter les personnes, sans frontières.">
+<title>GENESIX — Bienvenue</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  background:#050914;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  padding:24px;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    linear-gradient(rgba(0,212,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.035) 1px,transparent 1px);
+  background-size:35px 35px;
+  pointer-events:none;
+}
+
+.glow{
+  position:fixed;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:#0077ff;
+  filter:blur(120px);
+  opacity:.23;
+  top:20%;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.container{
+  position:relative;
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  animation:appear 1s ease;
+}
+
+.logo{
+  width:105px;
+  height:105px;
+  margin:0 auto 25px;
+  border-radius:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:62px;
+  font-weight:900;
+  background:linear-gradient(135deg,#087cff,#00dfd0,#925bff);
+  box-shadow:0 0 45px rgba(0,212,255,.28);
+}
+
+h1{
+  font-size:37px;
+  font-weight:900;
+  letter-spacing:4px;
+  background:linear-gradient(90deg,#fff,#00d9ff,#a98aff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.subtitle{
+  color:#a7b6ce;
+  font-size:14px;
+  margin-top:13px;
+  line-height:1.7;
+}
+
+.loader{
+  width:48px;
+  height:48px;
+  border:3px solid rgba(255,255,255,.1);
+  border-top-color:#00d9ff;
+  border-right-color:#925bff;
+  border-radius:50%;
+  margin:38px auto 18px;
+  animation:spin .8s linear infinite;
+}
+
+.status{
+  color:#00d9c4;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.enter{
+  display:inline-block;
+  margin-top:30px;
+  padding:15px 28px;
+  border-radius:14px;
+  color:#fff;
+  font-size:14px;
+  font-weight:bold;
+  text-decoration:none;
+  background:linear-gradient(100deg,#087cff,#00bfcf);
+  box-shadow:0 8px 25px rgba(0,150,255,.2);
+  transition:.3s;
+}
+
+.enter:active{
+  transform:scale(.96);
+}
+
+footer{
+  margin-top:55px;
+  color:#687991;
+  font-size:11px;
+  line-height:1.8;
+}
+
+footer strong{
+  color:#00d9ff;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes appear{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<main class="container">
+
+  <div class="logo">G</div>
+
+  <h1>GENESIX</h1>
+
+  <p class="subtitle">
+    Connecter les personnes,<br>
+    sans frontières.
+  </p>
+
+  <div class="loader"></div>
+
+  <p class="status">Préparation de votre espace...</p>
+
+  <a href="./login.html" class="enter">
+    Accéder à GENESIX →
+  </a>
+
+  <footer>
+    Une nouvelle façon de communiquer.<br>
+    Créé par <strong>Jason Aloma 🇨🇩</strong><br>
+    Kinshasa · RDC
+  </footer>
+
+</main>
+
+<script type="module">
+import { auth, onAuthStateChanged } from "./assets/js/firebase.js";
+onAuthStateChanged(auth, user => {
+  window.location.replace(user ? "./discussions.html" : "./login.html");
+});
+</script>
+
+</body>
+</html>

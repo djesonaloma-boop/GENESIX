@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<title>GENESIX — Inscription</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  font-family:Arial,sans-serif;
+  background:#050914;color:#fff;
+  display:flex;justify-content:center;
+  align-items:center;padding:22px;
+}
+body:before{
+  content:"";position:fixed;inset:0;
+  background:
+  linear-gradient(#00d4ff08 1px,transparent 1px),
+  linear-gradient(90deg,#00d4ff08 1px,transparent 1px);
+  background-size:35px 35px;pointer-events:none;
+}
+.glow{
+  position:fixed;width:280px;height:280px;
+  background:#0077ff;filter:blur(130px);
+  opacity:.2;top:0;left:50%;transform:translateX(-50%);
+}
+.container{position:relative;width:100%;max-width:440px;padding:10px 0}
+.brand{text-align:center;margin-bottom:22px}
+.logo{
+  width:65px;height:65px;margin:0 auto 10px;
+  border-radius:21px;display:grid;place-items:center;
+  font-size:39px;font-weight:900;
+  background:linear-gradient(135deg,#087cff,#00dfd0,#925bff);
+  box-shadow:0 0 30px #008cff45;
+}
+.brand h1{
+  font-size:27px;letter-spacing:4px;
+  background:linear-gradient(90deg,#fff,#00d9ff,#a98aff);
+  -webkit-background-clip:text;color:transparent;
+}
+.brand p{font-size:12px;color:#91a5c0;margin-top:6px}
+.card{
+  background:#0d192fe8;
+  border:1px solid #00d4ff28;
+  border-radius:23px;padding:23px 19px;
+  box-shadow:0 20px 60px #0007;
+  backdrop-filter:blur(18px);
+}
+.card h2{font-size:22px;margin-bottom:7px}
+.description{font-size:12px;color:#91a5c0;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:14px;min-width:0}
+label{display:block;font-size:11px;color:#c1d0e5;margin-bottom:8px}
+input{
+  width:100%;height:47px;padding:0 12px;
+  border:1px solid #263954;border-radius:11px;
+  background:#091426;color:#fff;outline:none;font-size:16px;
+}
+input:focus{border-color:#00cfff;box-shadow:0 0 0 3px #00cfff15}
+.full{grid-column:1/-1}
+.password-wrap{position:relative}
+.password-wrap input{padding-right:57px}
+.eye{
+  position:absolute;right:8px;top:50%;
+  transform:translateY(-50%);
+  border:0;background:none;color:#00d9ff;
+  padding:9px;font-size:11px;
+}
+.hint{font-size:10px;color:#758ba7;margin-top:7px}
+.check{
+  display:flex;align-items:flex-start;gap:9px;
+  color:#a8b8ce;font-size:11px;
+  line-height:1.5;margin:8px 0 18px;
+}
+.check input{width:17px;height:17px;flex-shrink:0;accent-color:#00cfff}
+.check a{color:#00d9ff;text-decoration:none}
+.btn{
+  width:100%;height:51px;border:0;border-radius:13px;
+  color:#fff;font-weight:bold;font-size:14px;
+  background:linear-gradient(100deg,#087cff,#00cfc8);
+  cursor:pointer;box-shadow:0 8px 25px #007bff30;
+}
+.btn:disabled{opacity:.6}
+.message{
+  display:none;padding:12px;border-radius:10px;
+  font-size:12px;line-height:1.5;margin-bottom:15px;
+}
+.error{display:block;background:#ff42421a;color:#ff8585;border:1px solid #ff424240}
+.success{display:block;background:#00d6a51a;color:#43e9bd;border:1px solid #00d6a540}
+.bottom{text-align:center;color:#91a5c0;font-size:12px;margin-top:20px}
+.bottom a{color:#00d9ff;text-decoration:none;font-weight:bold}
+footer{text-align:center;color:#60728c;font-size:10px;margin-top:20px}
+footer strong{color:#00d9ff}
+@media(max-width:350px){
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+<div class="glow"></div>
+
+<main class="container">
+
+<header class="brand">
+  <div class="logo">G</div>
+  <h1>GENESIX</h1>
+  <p>Rejoignez notre communauté.</p>
+</header>
+
+<section class="card">
+  <h2>Créer un compte ✨</h2>
+  <p class="description">Remplissez les informations pour rejoindre GENESIX.</p>
+
+  <div id="message" class="message" role="alert"></div>
+
+  <form id="registerForm">
+
+    <div class="grid">
+
+      <div class="field">
+        <label for="firstName">Prénom</label>
+        <input id="firstName" type="text" placeholder="Votre prénom" maxlength="40" autocomplete="given-name" required>
+      </div>
+
+      <div class="field">
+        <label for="lastName">Nom</label>
+        <input id="lastName" type="text" placeholder="Votre nom" maxlength="40" autocomplete="family-name" required>
+      </div>
+
+      <div class="field full">
+        <label for="username">Pseudo GENESIX</label>
+        <input id="username" type="text" placeholder="Exemple : jason_aloma" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" required>
+        <p class="hint">Lettres, chiffres et underscore uniquement.</p>
+      </div>
+
+      <div class="field full">
+        <label for="email">Adresse email</label>
+        <input id="email" type="email" placeholder="exemple@email.com" autocomplete="email" required>
+      </div>
+
+      <div class="field full">
+        <label for="password">Mot de passe</label>
+        <div class="password-wrap">
+          <input id="password" type="password" placeholder="Minimum 8 caractères" minlength="8" autocomplete="new-password" required>
+          <button class="eye" type="button" data-target="password">VOIR</button>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <div class="password-wrap">
+          <input id="confirmPassword" type="password" placeholder="Répétez le mot de passe" minlength="8" autocomplete="new-password" required>
+          <button class="eye" type="button" data-target="confirmPassword">VOIR</button>
+        </div>
+      </div>
+
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="terms" required>
+      <span>J'accepte les conditions d'utilisation et la politique de confidentialité de GENESIX.</span>
+    </label>
+
+    <button type="submit" class="btn" id="registerBtn">
+      Créer mon compte →
+    </button>
+
+  </form>
+
+  <p class="bottom">
+    Vous avez déjà un compte ?
+    <a href="./login.html">Se connecter</a>
+  </p>
+</section>
+
+<footer>
+  Créé par <strong>Jason Aloma 🇨🇩</strong> · Kinshasa · RDC
+</footer>
+
+</main>
+
+<script type="module">
+import {
+  auth, db, createUserWithEmailAndPassword, updateProfile, onAuthStateChanged,
+  doc, setDoc, serverTimestamp, getDoc, runTransaction, deleteDoc
+} from "./assets/js/firebase.js";
+
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
+const btn = document.getElementById("registerBtn");
+let submitting = false;
+
+function showMessage(text, type = "error") {
+  message.textContent = text;
+  message.className = "message " + type;
+}
+
+onAuthStateChanged(auth, async user => {
+  if (!user || submitting) return;
+  try {
+    const profile = await getDoc(doc(db, "users", user.uid));
+    if (profile.exists()) window.location.replace("./discussions.html");
+  } catch (error) {
+    showMessage("Impossible de vérifier votre profil. Vérifiez votre connexion puis rechargez la page.");
+  }
+});
+
+document.querySelectorAll(".eye").forEach(button => {
+  button.addEventListener("click", () => {
+    const input = document.getElementById(button.dataset.target);
+    const visible = input.type === "text";
+    input.type = visible ? "password" : "text";
+    button.textContent = visible ? "VOIR" : "CACHER";
+  });
+});
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  if (submitting) return;
+
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (password !== confirmPassword) return showMessage("Les deux mots de passe ne correspondent pas.");
+  if (!/^[a-zA-Z0-9_]{3,24}$/.test(username)) return showMessage("Le pseudo doit contenir 3 à 24 caractères : lettres, chiffres ou underscore.");
+  if (password.length < 8) return showMessage("Le mot de passe doit contenir au moins 8 caractères.");
+
+  submitting = true;
+  btn.disabled = true;
+  btn.textContent = "Vérification du compte...";
+
+  try {
+    // Le contrôle du pseudo ne doit pas interroger Firestore avant authentification.
+    // Le pseudo est enregistré dans le profil ; l'unicité pourra être ajoutée
+    // ultérieurement avec une collection dédiée et des règles adaptées.
+    btn.textContent = "Création du compte...";
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = credential.user;
+    const displayName = (firstName + " " + lastName).trim();
+
+    await updateProfile(user, { displayName });
+
+    const profile = {
+      uid: user.uid,
+      firstName,
+      lastName,
+      name: displayName,
+      displayName,
+      username,
+      usernameLower: username.toLowerCase(),
+      photoURL: "",
+      photo: "",
+      bio: "",
+      status: "Salut, je suis sur GENESIX",
+      points: 0,
+      online: true,
+      createdAt: serverTimestamp(),
+      lastSeen: serverTimestamp()
+    };
+
+    // Réservation atomique du pseudo : un pseudo ne peut être utilisé qu'une fois.
+    const usernameRef = doc(db, "usernames", username.toLowerCase());
+    const profileRef = doc(db, "users", user.uid);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const reserved = await transaction.get(usernameRef);
+        if (reserved.exists()) throw new Error("GENESIX_USERNAME_TAKEN");
+        transaction.set(usernameRef, { uid: user.uid, username, createdAt: serverTimestamp() });
+        transaction.set(profileRef, profile);
+      });
+    } catch (writeError) {
+      try { await deleteDoc(profileRef); } catch (_) {}
+      try { const authSdk = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"); await authSdk.deleteUser(user); } catch (_) {}
+      throw writeError;
+    }
+    showMessage("Compte créé avec succès ! Ouverture de vos discussions...", "success");
+    window.location.replace("./discussions.html");
+  } catch (error) {
+    const errors = {
+      "auth/email-already-in-use": "Cette adresse email possède déjà un compte. Connectez-vous plutôt.",
+      "auth/invalid-email": "Adresse email invalide.",
+      "auth/weak-password": "Le mot de passe doit contenir au moins 8 caractères.",
+      "auth/network-request-failed": "Connexion Internet interrompue. Réessayez.",
+      "auth/operation-not-allowed": "Activez le fournisseur Email/Mot de passe dans Firebase Authentication.",
+      "auth/too-many-requests": "Trop de tentatives. Réessayez plus tard."
+    };
+    if (error.message === "GENESIX_USERNAME_TAKEN") {
+      showMessage("Ce pseudo est déjà utilisé. Choisissez-en un autre.");
+    } else if (auth.currentUser) {
+      // L'authentification a pu réussir avant une coupure pendant l'écriture du profil.
+      showMessage("Votre compte de connexion existe déjà, mais le profil n'a pas été confirmé. Rechargez cette page ou contactez l'administrateur avant de retenter une inscription.");
+    } else {
+      showMessage(errors[error.code] || "Inscription impossible : " + (error.message || "erreur inconnue"));
+    }
+    submitting = false;
+    btn.disabled = false;
+    btn.textContent = "Créer mon compte →";
+  }
+});
+</script>
+
+</body>
+</html>

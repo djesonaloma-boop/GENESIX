@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050a1a">
+<meta name="description" content="GENESIX - Vos discussions">
+<title>GENESIX — Discussions</title>
+
+<style>
+@property --angle {
+  syntax:"<angle>";
+  inherits:false;
+  initial-value:0deg;
+}
+:root{
+  --bg:#050a1a;
+  --panel:rgba(14,20,42,.76);
+  --line:rgba(140,160,255,.17);
+  --text:#eef1fb;
+  --muted:#8a95b3;
+  --accent:#7c5cff;
+  --accent2:#12d6b4;
+  --shadow:rgba(0,0,0,.45);
+  color-scheme:dark;
+}
+:root[data-theme="white"]{
+  --bg:#f2f5ff;
+  --panel:rgba(255,255,255,.82);
+  --line:rgba(60,80,130,.15);
+  --text:#11182c;
+  --muted:#66718b;
+  --accent:#6848ed;
+  --accent2:#00a98e;
+  --shadow:rgba(40,50,90,.13);
+  color-scheme:light;
+}
+:root[data-theme="black"]{
+  --bg:#000;
+  --panel:rgba(20,20,25,.88);
+  --line:rgba(255,255,255,.12);
+  --text:#f5f5f5;
+  --muted:#999;
+  --accent:#805cff;
+  --accent2:#00d9b5;
+  --shadow:rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;min-height:100dvh;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;transition:background .35s,color .35s;
+  display:flex;flex-direction:column;
+}
+.background{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.background i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.45;animation:float 18s ease-in-out infinite alternate}
+.background i:nth-child(1){width:48vmax;height:48vmax;background:#593cff;left:-18vmax;top:-20vmax}
+.background i:nth-child(2){width:40vmax;height:40vmax;background:#00c9ae;right:-15vmax;bottom:-20vmax;opacity:.25;animation-delay:-6s}
+.background i:nth-child(3){width:28vmax;height:28vmax;background:#286aff;right:15vw;top:-12vmax;opacity:.25;animation-delay:-10s}
+@keyframes float{to{transform:translate(6vmax,4vmax) scale(1.12)}}
+.grid-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(124,92,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(124,92,255,.055) 1px,transparent 1px);background-size:55px 55px;mask-image:radial-gradient(ellipse at center,#000 10%,transparent 80%)}
+
+/* HEADER */
+header{width:100%;max-width:1150px;margin:auto;padding:20px 25px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:900;letter-spacing:1px}
+.logo-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:23px;color:white;background:linear-gradient(135deg,#7655ff,#09cdb5);box-shadow:0 8px 30px rgba(124,92,255,.4)}
+.logo span{color:var(--accent2)}
+.header-actions{display:flex;gap:10px;align-items:center}
+.points-badge{padding:10px 14px;border-radius:13px;background:var(--panel);border:1px solid var(--line);font-size:13px;font-weight:800}
+.points-badge b{color:var(--accent2)}
+.theme-btn,.logout-btn{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);padding:11px 15px;border-radius:13px;cursor:pointer;font-size:13px;font-weight:700;backdrop-filter:blur(12px)}
+.logout-btn{background:rgba(255,70,90,.12);border-color:rgba(255,70,90,.3);color:#ff8999}
+
+/* LAYOUT */
+main{width:100%;max-width:1150px;margin:auto;padding:10px 25px 30px;flex:1;display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:24px;backdrop-filter:blur(25px);box-shadow:0 20px 60px var(--shadow);overflow:hidden}
+.card-title{padding:18px 18px 12px;display:flex;justify-content:space-between;align-items:center}
+.card-title h2{font-size:15px;font-weight:900}
+.card-title small{color:var(--muted);font-size:11px}
+.search{padding:0 18px 14px}
+.search input{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(120,130,180,.07);color:var(--text);outline:none;font-size:13px}
+.search input::placeholder{color:var(--muted)}
+.search input:focus{border-color:var(--accent)}
+
+/* USERS */
+.users-list{padding:0 12px 12px;display:flex;flex-wrap:wrap;gap:8px}
+.user-chip{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:20px;background:rgba(124,92,255,.14);border:1px solid var(--line);font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.user-chip:hover{transform:translateY(-2px);border-color:var(--accent)}
+.user-chip i{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#7655ff,#09cdb5);display:grid;place-items:center;font-style:normal;font-size:12px;color:#fff}
+
+/* CHATS */
+.chats-list{max-height:520px;overflow-y:auto}
+.chat{display:flex;gap:12px;padding:14px 18px;cursor:pointer;align-items:center;border-top:1px solid var(--line);transition:.2s}
+.chat:hover{background:rgba(124,92,255,.08)}
+.chat.active{background:rgba(124,92,255,.14);border-left:3px solid var(--accent)}
+.avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7655ff,#09cdb5);color:#fff;display:grid;place-items:center;font-weight:900;font-size:20px;flex-shrink:0}
+.chat-info{flex:1;min-width:0}
+.chat-info b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-info small{color:var(--muted);font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.chat-time{font-size:10px;color:var(--muted);flex-shrink:0}
+.empty{padding:30px 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+
+/* CHAT WINDOW */
+.chat-window{display:flex;flex-direction:column;min-height:560px}
+.chat-header{padding:16px 20px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line)}
+.chat-header b{font-size:16px}
+.chat-header small{display:block;color:var(--muted);font-size:11px}
+.messages{flex:1;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:380px;max-height:480px}
+.msg{max-width:75%;padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word;animation:appear .3s ease both}
+.msg.mine{align-self:flex-end;background:linear-gradient(110deg,#7655ff,#4f78ff 60%,#10c6b5);color:#fff;border-bottom-right-radius:5px}
+.msg.other{align-self:flex-start;background:rgba(124,92,255,.15);border:1px solid var(--line);border-bottom-left-radius:5px}
+.msg small{display:block;font-size:10px;opacity:.7;margin-top:5px;text-align:right}
+.msg.other small{text-align:left}
+.composer{padding:14px;display:flex;gap:10px;border-top:1px solid var(--line)}
+.composer input{flex:1;padding:15px;border-radius:14px;border:1px solid var(--line);background:rgba(120,130,180,.07);color:var(--text);outline:none;font-size:14px}
+.composer input:focus{border-color:var(--accent)}
+.send-btn{padding:15px 20px;border:0;border-radius:14px;background:linear-gradient(110deg,#7655ff,#4f78ff 60%,#10c6b5);color:#fff;font-weight:850;cursor:pointer}
+.send-btn:disabled{opacity:.6}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+footer{max-width:1150px;margin:0 auto;padding:20px;text-align:center;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}
+footer strong{color:var(--accent2)}
+@media(max-width:900px){
+  main{grid-template-columns:1fr;padding:10px 15px 30px}
+  .chats-list{max-height:320px}
+  .chat-window{min-height:500px}
+  .header-actions .points-badge{display:none}
+}
+@media(max-width:450px){
+  header{padding:16px}
+  .theme-btn span{display:none}
+  .msg{max-width:88%}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="background" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grid-bg"></div>
+
+<header>
+  <div class="logo"><div class="logo-icon">G</div>GENES<span>IX</span></div>
+  <div class="header-actions">
+    <div class="points-badge">⭐ <b id="myPoints">0</b> pts</div>
+    <button class="theme-btn" id="themeBtn" type="button"><span id="themeIcon">🌙</span><span id="themeLabel">Mode bleu nuit</span> ▾</button>
+    <button class="logout-btn" id="logoutBtn">Déconnexion</button>
+  </div>
+</header>
+
+<main>
+  <!-- COLONNE GAUCHE : UTILISATEURS + DISCUSSIONS -->
+  <div style="display:flex;flex-direction:column;gap:18px">
+    <div class="card">
+      <div class="card-title"><h2>👥 Communauté</h2><small id="usersCount">Chargement...</small></div>
+      <div class="search"><input id="searchUser" placeholder="🔍 Rechercher un ami..."></div>
+      <div class="users-list" id="usersList"><p style="color:var(--muted);font-size:12px;padding:4px">Chargement...</p></div>
+      <p style="padding:0 18px 14px;color:var(--muted);font-size:11px">Clique sur un ami pour discuter. Ton lien de parrainage : <b id="refLink" style="color:var(--accent2);cursor:pointer">Copier mon lien</b></p>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><h2>💬 Mes Discussions</h2><small id="chatsCount"></small></div>
+      <div class="chats-list" id="chatsList"><p class="empty">Chargement...</p></div>
+    </div>
+  </div>
+
+  <!-- COLONNE DROITE : CHAT OUVERT -->
+  <div class="card chat-window" id="chatWindow">
+    <div class="chat-header" id="chatHeader">
+      <div class="avatar" id="chatAvatar">💬</div>
+      <div><b id="chatTitle">Choisis une discussion</b><small id="chatSubtitle">Sélectionne un ami à gauche ou crée une nouvelle discussion</small></div>
+    </div>
+    <div class="messages" id="messages">
+      <div style="text-align:center;color:var(--muted);font-size:13px;line-height:1.8;padding:40px 10px">
+        <div style="font-size:55px">💬</div>
+        <b style="color:var(--text);font-size:16px">Bienvenue sur GENESIX</b><br>
+        Clique sur un utilisateur à gauche pour commencer à discuter.<br>
+        Chaque message = <b style="color:var(--accent2)">+1 point</b> ⭐
+      </div>
+    </div>
+    <div class="composer">
+      <input id="msgInput" placeholder="Écris ton message..." autocomplete="off">
+      <button class="send-btn" id="sendBtn">Envoyer ➤</button>
+    </div>
+  </div>
+</main>
+
+<footer>© 2026 GENESIX · Créé par <strong>Jason Aloma 🇨🇩</strong> · Kinshasa · RDC</footer>
+
+<script>
+(function(){
+  const root=document.documentElement;
+  const btn=document.getElementById("themeBtn");
+  const icon=document.getElementById("themeIcon");
+  const label=document.getElementById("themeLabel");
+  const themes=[{id:"dark",icon:"🌙",label:"Mode bleu nuit"},{id:"white",icon:"☀️",label:"Mode blanc"},{id:"black",icon:"⚫",label:"Mode noir"}];
+  let current="dark";
+  try{const saved=localStorage.getItem("genesix_theme"); if(themes.some(t=>t.id===saved)) current=saved;}catch(e){}
+  function applyTheme(){
+    root.setAttribute("data-theme",current==="dark"?"":current);
+    const s=themes.find(t=>t.id===current);
+    icon.textContent=s.icon; label.textContent=s.label;
+    document.querySelector('meta[name="theme-color"]').content=current==="white"?"#f2f5ff":current==="black"?"#000000":"#050a1a";
+    try{localStorage.setItem("genesix_theme",current);}catch(e){}
+  }
+  btn.addEventListener("click",()=>{const i=themes.findIndex(t=>t.id===current); current=themes[(i+1)%themes.length].id; applyTheme();});
+  applyTheme();
+})();
+</script>
+
+<!-- FIREBASE GENESIX - starlink-investit -->
+<script type="module">
+import {
+  auth, db, onAuthStateChanged, signOut, collection, query, where,
+  orderBy, onSnapshot, getDocs, addDoc, doc, updateDoc, getDoc, setDoc,
+  increment, serverTimestamp
+} from "./assets/js/firebase.js";
+
+let myUid = null;
+let myName = "";
+let currentChatId = null;
+let currentChatName = "";
+let allUsers = [];
+let unsubscribeMessages = null;
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+const usersListEl = document.getElementById("usersList");
+const chatsListEl = document.getElementById("chatsList");
+const messagesEl = document.getElementById("messages");
+const msgInput = document.getElementById("msgInput");
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return location.replace("./login.html");
+  myUid = user.uid;
+  // Mon profil -> points + nom
+  let snap;
+  try {
+    snap = await getDoc(doc(db, "users", myUid));
+    if (!snap.exists()) {
+      // Récupération automatique si Auth a créé le compte mais que
+      // l'écriture du profil a échoué lors de la première inscription.
+      const fallbackName = user.displayName || (user.email || "Membre GENESIX").split("@")[0];
+      await setDoc(doc(db, "users", myUid), {
+        uid: myUid, name: fallbackName, displayName: fallbackName,
+        firstName: fallbackName, lastName: "", username: fallbackName,
+        usernameLower: fallbackName.toLowerCase(),
+        photoURL: user.photoURL || "", photo: user.photoURL || "", bio: "",
+        status: "Salut, je suis sur GENESIX", points: 0, online: true,
+        createdAt: serverTimestamp(), lastSeen: serverTimestamp()
+      });
+      snap = await getDoc(doc(db, "users", myUid));
+    }
+    const d = snap.data() || {};
+    myName = d.name || d.firstName || user.email || "Membre GENESIX";
+    document.getElementById("myPoints").textContent = d.points || 0;
+  } catch (error) {
+    console.error("Profil GENESIX :", error);
+    alert("Impossible de charger votre profil. Vérifiez les règles Firestore et votre connexion, puis rechargez la page.");
+    return;
+  }
+  // Lien parrainage
+  const refUrl = location.origin + "/register.html?ref=" + myUid;
+  document.getElementById("refLink").onclick = () => {
+    navigator.clipboard.writeText(refUrl).then(() => alert("Lien de parrainage copié ✅\n" + refUrl));
+    localStorage.setItem("genesix_ref", myUid);
+  };
+  loadUsers();
+  loadChats();
+});
+
+// --- UTILISATEURS ---
+async function loadUsers() {
+  let snap;
+  try { snap = await getDocs(collection(db, "users")); }
+  catch (error) { console.error(error); usersListEl.textContent = "Impossible de charger les membres. Vérifiez les règles Firestore."; return; }
+  allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.id !== myUid);
+  document.getElementById("usersCount").textContent = allUsers.length + " membres";
+  renderUsers("");
+}
+function renderUsers(filter) {
+  const list = allUsers.filter(u => {
+    const name = (u.name || u.usernameDisplay || u.username || "").toLowerCase();
+    return name.includes(filter.toLowerCase());
+  });
+  if (!list.length) {
+    usersListEl.innerHTML = "<p style='color:var(--muted);font-size:12px'>Aucun autre utilisateur. Invite un ami avec ton lien de parrainage.</p>";
+    return;
+  }
+  usersListEl.innerHTML = list.map(u => {
+    const display = u.name || u.usernameDisplay || u.username || "Membre GENESIX";
+    const letter = display[0].toUpperCase();
+    return `<div class="user-chip" data-user-id="${escapeHtml(u.id)}" data-user-name="${escapeHtml(display)}"><i>${escapeHtml(letter)}</i> ${escapeHtml(display)}</div>`;
+  }).join("");
+  usersListEl.querySelectorAll("[data-user-id]").forEach(el => {
+    el.addEventListener("click", () => startChat(el.dataset.userId, el.dataset.userName));
+  });
+}
+document.getElementById("searchUser").addEventListener("input", (e) => renderUsers(e.target.value));
+
+// --- MES DISCUSSIONS ---
+function loadChats() {
+  const q = query(collection(db, "chats"), where("members", "array-contains", myUid));
+  onSnapshot(q, (snap) => {
+    document.getElementById("chatsCount").textContent = snap.size + " chats";
+    if (snap.empty) {
+      chatsListEl.innerHTML = "<p class='empty'>Aucune discussion.<br>Clique sur un ami en haut pour commencer.</p>";
+      return;
+    }
+    chatsListEl.innerHTML = snap.docs.map(d => {
+      const c = d.data();
+      const name = c.groupName || "Discussion";
+      const last = c.lastMessage || "Aucun message";
+      const time = c.lastMessageTime?.toDate ? c.lastMessageTime.toDate().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : "";
+      const active = d.id === currentChatId ? " active" : "";
+      return `<div class="chat${active}" data-chat-id="${escapeHtml(d.id)}" data-chat-name="${escapeHtml(name)}"><div class="avatar">${escapeHtml(name[0] || "G")}</div><div class="chat-info"><b>${escapeHtml(name)}</b><small>${escapeHtml(last)}</small></div><span class="chat-time">${escapeHtml(time)}</span></div>`;
+    }).join("");
+    chatsListEl.querySelectorAll("[data-chat-id]").forEach(el => {
+      el.addEventListener("click", () => openChat(el.dataset.chatId, el.dataset.chatName));
+    });
+  }, error => {
+    console.error("GENESIX chats:", error);
+    chatsListEl.textContent = "Impossible de charger les discussions. Vérifiez les règles Firestore.";
+  });
+}
+
+// --- CRÉER / OUVRIR CHAT ---
+window.startChat = async (otherId, otherName) => {
+  const q = query(collection(db, "chats"), where("members", "array-contains", myUid));
+  const snap = await getDocs(q);
+  let found = null;
+  snap.forEach(d => {
+    const m = d.data().members;
+    if (m.length === 2 && m.includes(otherId)) found = d.id;
+  });
+  if (found) return openChat(found, otherName);
+  const ref = await addDoc(collection(db, "chats"), {
+    members: [myUid, otherId],
+    type: "prive",
+    groupName: otherName,
+    lastMessage: "",
+    lastMessageTime: serverTimestamp(),
+    createdAt: serverTimestamp()
+  });
+  openChat(ref.id, otherName);
+};
+
+window.openChat = (chatId, title) => {
+  currentChatId = chatId;
+  currentChatName = title;
+  document.getElementById("chatTitle").textContent = title;
+  document.getElementById("chatSubtitle").textContent = "En ligne • GENESIX";
+  document.getElementById("chatAvatar").textContent = title[0].toUpperCase();
+  // Sur mobile, scroll vers le chat
+  if (window.innerWidth <= 900) {
+    document.getElementById("chatWindow").scrollIntoView({ behavior: "smooth" });
+  }
+  if (unsubscribeMessages) unsubscribeMessages();
+  const mq = query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc"));
+  unsubscribeMessages = onSnapshot(mq, (snap) => {
+    if (snap.empty) {
+      messagesEl.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:13px;padding:40px">Aucun message.<br>Dis bonjour à ${escapeHtml(title)} 👋</div>`;
+      return;
+    }
+    messagesEl.innerHTML = snap.docs.map(d => {
+      const m = d.data();
+      const isMe = m.senderId === myUid;
+      const time = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : "";
+      return `<div class="msg ${isMe ? 'mine' : 'other'}">${escapeHtml(m.text)}<small>${isMe ? 'Toi' : escapeHtml(title)} • ${escapeHtml(time)}</small></div>`;
+    }).join("");
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
+  // Recharge la liste pour mettre active
+  document.querySelectorAll(".chat").forEach(el => el.classList.remove("active"));
+};
+
+// --- ENVOYER MESSAGE ---
+async function sendMsg() {
+  const text = msgInput.value.trim();
+  if (!text) return;
+  if (text.length > 2000) { alert("Message trop long (maximum 2 000 caractères)."); return; }
+  if (!currentChatId) {
+    alert("Choisis d'abord une discussion ou clique sur un ami.");
+    return;
+  }
+  msgInput.value = "";
+  try { await addDoc(collection(db, "chats", currentChatId, "messages"), {
+    senderId: myUid,
+    text,
+    type: "texte",
+    createdAt: serverTimestamp(),
+    seen: false
+  });
+  await updateDoc(doc(db, "chats", currentChatId), {
+    lastMessage: text,
+    lastMessageTime: serverTimestamp()
+  });
+  // +1 point par message
+  await updateDoc(doc(db, "users", myUid), { points: increment(1) });
+  const me = await getDoc(doc(db, "users", myUid));
+  if (me.exists()) document.getElementById("myPoints").textContent = me.data().points || 0;
+  } catch (error) { console.error(error); msgInput.value = text; alert("Envoi impossible. Vérifiez votre connexion et les règles Firestore."); }
+}
+document.getElementById("sendBtn").onclick = sendMsg;
+msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMsg(); });
+
+// --- DECONNEXION ---
+document.getElementById("logoutBtn").onclick = async () => {
+  sessionStorage.setItem("genesix_just_logged_out", "1");
+  await signOut(auth);
+  localStorage.removeItem("genesix_token");
+  location.href = "index.html";
+};
+</script>
+
+</body>
+</html>
